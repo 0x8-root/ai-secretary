@@ -1,33 +1,40 @@
-import requests
-from winotify import Notification, audio
 import os
+import requests
 from dotenv import load_dotenv
+from winotify import Notification, audio
 
 load_dotenv()
-DEFAULT_TOPIC=os.getenv('topic', "")
+DEFAULT_TOPIC = os.getenv("topic", "")
+
 
 def send_windows_push(title: str, message: str) -> None:
     toast = Notification(
-        app_id = "Ai-secretary",
-        title = title,
-        msg = message,
+        app_id="Ai-secretary",
+        title=title,
+        msg=message,
         duration="short",
     )
     toast.set_audio(audio.Default, loop=False)
     toast.show()
 
-def send_phone_push(topic: str, title: str, message: str) -> None:
+
+def send_phone_push(topic: str, title: str, message: str, priority: str = "3") -> None:
     if not topic:
         return
     url = f"https://ntfy.sh/{topic}"
     requests.post(
         url,
-        data = message.encode("utf-8"),
-        headers = {"title": title.encode("utf-8")},
-        timeout = 10,
+        data=message.encode("utf-8"),
+        headers={
+            "Title": title.encode("utf-8"),
+            "Priority": priority,
+            "Tags": "robot",
+        },
+        timeout=10,
     )
 
-def notify(title: str, message: str, topic: str = DEFAULT_TOPIC) -> None:
-    send_windows_push(title,message)
+
+def notify(title: str, message: str, priority: str = "3", topic: str = DEFAULT_TOPIC) -> None:
+    send_windows_push(title, message)
     if topic:
-        send_phone_push(topic, title, message)
+        send_phone_push(topic, title, message, priority=priority)
