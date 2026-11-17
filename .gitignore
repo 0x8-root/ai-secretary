@@ -1,3 +1,27 @@
+# Секреты и переменные окружения (НИКОГДА не заливать на GitHub)
 .env
-*.db
+.env.*
+
+# Виртуальные окружения и кэш Python
+.venv/
+venv/
+env/
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Локальные базы данных SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Логи работы фоновых скриптов и редакторов
+*.log
+listener.log
+.vscode/
+.idea/
+
+# Системный мусор Windows и Linux
+Thumbs.db
+Desktop.ini
+.DS_Store
