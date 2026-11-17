@@ -1,3 +1,5 @@
-winotify
+fastapi
+uvicorn
 requests
 python-dotenv
+winotify; sys_platform == 'win32'
