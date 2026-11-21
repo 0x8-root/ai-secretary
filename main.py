@@ -29,11 +29,11 @@ def main():
 
         if now_time == "00:00" and last_reset_date != now.date():
             database.reset_recurring_tasks()
-            
+
         time.sleep(20)  
 
 def run_server():
-    uvicorn.run("server:app", host="127.0.0.1", port=8000, log_level="warning")
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, log_level="warning")
   
         
 if __name__ == '__main__':
