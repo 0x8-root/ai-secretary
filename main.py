@@ -3,29 +3,38 @@ import time
 from datetime import datetime
 from notifier import notify
 import database
+import uvicorn
+import threading
 
 def main():
     database.init_db()
+    threading.Thread(target=run_server, daemon=True).start()
     print("Ai-secretary запущен")
 
-    title =  input("Введите текст напоминания(Или нажмите Enter, чтобы сразу запустить таймер): ").strip()
-    if title:
-        remind_time = input("Во сколько выполнить напоминание(В формате 00:00): ").strip()
-        priority = input("Введите приоритет от 1-5(ENTER = 3): ").strip() or "3"
-        database.add_task(title, remind_time, priority)
-        print(f"Сохранено: {title} на {remind_time}, приоритет:{priority}")
-
     print("Режим ожидания запущен. Для остановки Ctrl+С...")
+    last_reset_date = None
     while True:
-        now_time = datetime.now().strftime("%H:%M")
-        tasks = database.get_pending_tasks(now_time)
+        now = datetime.now()
+        now_time = now.strftime("%H:%M")
+        now_weekday = now.weekday()
+        tasks = database.get_pending_tasks(now_time, now_weekday)
 
+        if now_time == "00:00" and last_reset_date != now.date():
+            database.reset_recurring_tasks()
+            last_reset_date = now.date()
         for task_id, task_title, task_priority in tasks:
-            notify(title="Напоминанинае Ai-secretary", message=task_title, priority=task_priority)
+            notify(title="Напоминание Ai-secretary", message=task_title, priority=task_priority)
             database.mark_as_sent(task_id)
-            print(f"{[now_time]}: Пуш отправлен: {task_title}")
+            print(f"[{now_time}]: Пуш отправлен: {task_title}")
 
-        time.sleep(20)   
+        if now_time == "00:00" and last_reset_date != now.date():
+            database.reset_recurring_tasks()
+            
+        time.sleep(20)  
+
+def run_server():
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, log_level="warning")
+  
         
 if __name__ == '__main__':
     main()

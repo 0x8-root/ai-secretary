@@ -38,7 +38,10 @@ def get_pending_tasks(current_time: str, current_weekday: int) -> list[tuple[int
            if task_type != "weekly" or str(current_weekday) in days_of_week.split(","):
                result.append((task_id, title, priority))
        return result
-               
+
+def cleanup_once_tasks() -> None:
+    with sqlite3.connect(DB_NAME) as conn:
+        conn.execute("DELETE FROM tasks WHERE is_sent = 1 AND task_type = 'once'")               
 
 def mark_as_sent(task_id: int) -> None: #Функция присваивает после отправки задачи 1 в таблице 
     with sqlite3.connect(DB_NAME) as conn:

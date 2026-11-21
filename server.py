@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from database import add_task, init_db, get_all_tasks, delete_task 
+from fastapi.responses import FileResponse
 
 init_db()
 
@@ -16,7 +17,7 @@ class TaskCreate(BaseModel):
 
 @app.get("/")
 def read_root():
-    return { "Hello": "world" }
+    return FileResponse("index.html")
     
 @app.get("/tasks/{task_id}")
 def read_task(task_id: int, q: str | None = None):
