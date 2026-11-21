@@ -4,13 +4,13 @@ DB_NAME="secretary.db" #Имя базы даных
 
 def init_db() -> None:#Функция создания таблицы(возращает ничего)
     with sqlite3.connect(DB_NAME) as conn:#Стандартное подключение таблицы
-       conn.execute( #Ввод данных в таблицу
+       conn.execute( #Создание столбов в таблице
            """
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 remind_time TEXT NOT NULL,
-                priority TEXT DEFAULT '3',
+                priority INTEGER DEFAULT 3,
                 task_type TEXT NOT NULL,
                 days_of_week TEXT DEFAULT '',
                 is_sent INTEGER DEFAULT 0
@@ -19,7 +19,7 @@ def init_db() -> None:#Функция создания таблицы(возра
 
        )
 
-def add_task(title: str, remind_time: str, task_type: str, days_of_week: str = "", priority: str = "3") -> None: #Функция добавления задачи
+def add_task(title: str, remind_time: str, task_type: str, days_of_week: str = "", priority: int = 3) -> None: #Функция добавления задачи
     with sqlite3.connect(DB_NAME) as conn:
        conn.execute(
            "INSERT INTO tasks (title, remind_time, task_type, days_of_week, priority) VALUES (?, ?, ?, ?, ?)",  #Добавляет в табличку значения из ввода title, remind_time, priority

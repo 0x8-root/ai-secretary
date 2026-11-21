@@ -3,3 +3,5 @@ uvicorn
 requests
 python-dotenv
 winotify; sys_platform == 'win32'
+uv
+"fastapi[standard]"
